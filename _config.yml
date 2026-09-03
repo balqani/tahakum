@@ -1,1 +1,22 @@
 
+title: Опровержение киталийского манхаджа
+description: Перевод на русский язык
+lang: ru
+
+# Без готовой темы — используется собственный шаблон из _layouts/default.html
+theme: null
+markdown: kramdown
+
+kramdown:
+  input: GFM
+  auto_ids: true          # нужно для оглавления и якорей
+  toc_levels: 2..3        # в оглавление попадают заголовки ## и ###
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: "default"
+
+exclude:
+  - README.md
