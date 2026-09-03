@@ -57,4 +57,4 @@ next_title: "Часть вторая"
 воскресения“».
 {: .hadith}
 
-<span class="source">Сахих аль-Бухари, т. 9, с. 16</span>
+<span class="source">[Сахих аль-Бухари](https://shamela.ws/book/1681/10349), т. 9, с. 16</span>
