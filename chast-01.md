@@ -1,5 +1,3 @@
-[chast-01.md](https://github.com/user-attachments/files/31802403/chast-01.md)
-
 ---
 title: "Часть первая. Основы"
 permalink: /chast-01/
