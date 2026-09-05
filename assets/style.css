@@ -168,3 +168,19 @@ blockquote.hadith {
   body { font-size: 17px; }
   .page-title { font-size: 1.6rem; }
 }
+/* ---------- Полоска прогресса ---------- */
+
+.progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 0;
+  background: var(--link);
+  z-index: 100;
+  transition: width .1s linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress { transition: none; }
+}
