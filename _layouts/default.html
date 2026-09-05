@@ -61,6 +61,7 @@
       var a = document.createElement('a');
       a.href = '#';
       a.textContent = 'В начало';
+      a.style.color = '#9fd6c4';
       a.onclick = function (e) {
         e.preventDefault();
         window.scrollTo(0, 0);
@@ -72,7 +73,6 @@
         'bottom:1rem;background:#21201d;color:#fff;padding:.6rem 1rem;' +
         'border-radius:4px;font:14px/1.4 "PT Sans",sans-serif;z-index:99;' +
         'box-shadow:0 2px 12px rgba(0,0,0,.25)';
-      bar.querySelector('a').style.color = '#9fd6c4';
       document.body.appendChild(bar);
       setTimeout(function () { bar.remove(); }, 6000);
     });
