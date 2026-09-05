@@ -9,6 +9,48 @@
   <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ '/assets/style.css' | relative_url }}">
 </head>
+  <script>
+(function () {
+  var key = 'scroll:' + location.pathname;
+  var saveTimer;
+
+  // запоминаем позицию при прокрутке
+  window.addEventListener('scroll', function () {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function () {
+      try { localStorage.setItem(key, String(window.scrollY)); } catch (e) {}
+    }, 300);
+  }, { passive: true });
+
+  // восстанавливаем при открытии
+  var saved = 0;
+  try { saved = parseInt(localStorage.getItem(key) || '0', 10); } catch (e) {}
+  if (saved > 300 && !location.hash) {
+    requestAnimationFrame(function () {
+      window.scrollTo(0, saved);
+      var bar = document.createElement('div');
+      bar.textContent = 'Продолжили с места, где вы остановились. ';
+      var a = document.createElement('a');
+      a.href = '#';
+      a.textContent = 'В начало';
+      a.onclick = function (e) {
+        e.preventDefault();
+        window.scrollTo(0, 0);
+        try { localStorage.removeItem(key); } catch (e) {}
+        bar.remove();
+      };
+      bar.appendChild(a);
+      bar.style.cssText = 'position:fixed;left:50%;transform:translateX(-50%);' +
+        'bottom:1rem;background:#21201d;color:#fff;padding:.6rem 1rem;' +
+        'border-radius:4px;font:14px/1.4 "PT Sans",sans-serif;z-index:99;' +
+        'box-shadow:0 2px 12px rgba(0,0,0,.25)';
+      bar.querySelector('a').style.color = '#9fd6c4';
+      document.body.appendChild(bar);
+      setTimeout(function () { bar.remove(); }, 6000);
+    });
+  }
+})();
+</script>
 <body>
 
 <header class="site-head">
