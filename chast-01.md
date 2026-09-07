@@ -2,7 +2,7 @@
 title: "Часть первая. Основы"
 permalink: /chast-01/
 next_url: /chast-02/
-next_title: "Часть вторая"
+next_title: "Ко второй части"
 ---
 
 * содержание
