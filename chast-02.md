@@ -1,8 +1,10 @@
 ---
-title: "Часть вторая"
+title: "Часть вторая."
 permalink: /chast-02/
+prev_url: /chast-01/
+prev_title: "К первой части"
 next_url: /chast-03/
-next_title: "Часть третья"
+next_title: "К третьей части"
 ---
 
 * содержание
