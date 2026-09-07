@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% if page.title %}{{ page.title }} — {% endif %}{{ site.title }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ '/assets/style.css' | relative_url }}">
+</head>
+  
+<body>
+
+<header class="site-head">
+  <a class="site-name" href="{{ '/' | relative_url }}">{{ site.title }}</a>
+</header>
+
+<main>
+  {% if page.title %}<h1 class="page-title">{{ page.title }}</h1>{% endif %}
+  {{ content }}
+</main>
+
+<nav class="pager">
+  {% if page.prev_url %}<a href="{{ page.prev_url | relative_url }}">← {{ page.prev_title }}</a>{% endif %}
+  {% if page.next_url %}<a class="next" href="{{ page.next_url | relative_url }}">{{ page.next_title }} →</a>{% endif %}
+</nav>
+
+<footer class="site-foot">
+  <a href="{{ '/' | relative_url }}">К оглавлению</a>
+</footer>
+  <script>
+  document.querySelectorAll('a[href^="http"]').forEach(function (a) {
+    if (a.hostname !== location.hostname) {
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+    }
+  });
+</script>
+  <script>
+(function () {
+  var key = 'scroll:' + location.pathname;
+  var saveTimer;
+
+  // запоминаем позицию при прокрутке
+  window.addEventListener('scroll', function () {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function () {
+      try { localStorage.setItem(key, String(window.scrollY)); } catch (e) {}
+    }, 300);
+  }, { passive: true });
+
+  // восстанавливаем при открытии
+  var saved = 0;
+  try { saved = parseInt(localStorage.getItem(key) || '0', 10); } catch (e) {}
+  if (saved > 300 && !location.hash) {
+    requestAnimationFrame(function () {
+      window.scrollTo(0, saved);
+      var bar = document.createElement('div');
+      bar.textContent = 'Продолжили с места, где вы остановились. ';
+      var a = document.createElement('a');
+      a.href = '#';
+      a.textContent = 'В начало';
+      a.style.color = '#9fd6c4';
+      a.onclick = function (e) {
+        e.preventDefault();
+        window.scrollTo(0, 0);
+        try { localStorage.removeItem(key); } catch (e) {}
+        bar.remove();
+      };
+      bar.appendChild(a);
+      bar.style.cssText = 'position:fixed;left:50%;transform:translateX(-50%);' +
+        'bottom:1rem;background:#21201d;color:#fff;padding:.6rem 1rem;' +
+        'border-radius:4px;font:14px/1.4 "PT Sans",sans-serif;z-index:99;' +
+        'box-shadow:0 2px 12px rgba(0,0,0,.25)';
+      document.body.appendChild(bar);
+      setTimeout(function () { bar.remove(); }, 6000);
+    });
+  }
+})();
+</script>
+<script>
+(function () {
+  var doc = document.documentElement;
+  if (doc.scrollHeight - window.innerHeight < 600) return;
+
+  var bar = document.createElement('div');
+  bar.className = 'progress';
+  document.body.appendChild(bar);
+
+  var ticking = false;
+  function update() {
+    var max = doc.scrollHeight - window.innerHeight;
+    var pct = max > 0 ? (window.scrollY / max) * 100 : 0;
+    bar.style.width = Math.min(100, Math.max(0, pct)) + '%';
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  }, { passive: true });
+
+  window.addEventListener('resize', update, { passive: true });
+  update();
+})();
+</script>
+  <script>
+(function () {
+  var toc = document.getElementById('markdown-toc');
+  if (!toc) return;
+
+  var btn = document.createElement('button');
+  btn.className = 'toc-btn';
+  btn.setAttribute('aria-label', 'Оглавление и навигация');
+  btn.appendChild(document.createElement('span'));
+
+  var panel = document.createElement('div');
+  panel.className = 'toc-panel';
+  var nav = document.createElement('nav');
+
+  // --- оглавление главы ---
+  var h = document.createElement('h2');
+  h.textContent = 'В этой части';
+  nav.appendChild(h);
+  var copy = toc.cloneNode(true);
+  copy.removeAttribute('id');
+  nav.appendChild(copy);
+
+  // --- переходы ---
+  var links = document.createElement('div');
+  links.className = 'toc-nav';
+
+  function add(text, href, action) {
+    var a = document.createElement('a');
+    a.textContent = text;
+    a.href = href || '#';
+    if (action) a.onclick = action;
+    links.appendChild(a);
+  }
+
+  add('↑ В начало части', '#', function (e) {
+    e.preventDefault();
+    var smooth = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: smooth ? 'smooth' : 'auto' });
+    close();
+  });
+
+  var prev = document.querySelector('.pager a:not(.next)');
+  var next = document.querySelector('.pager a.next');
+  if (prev) add('← ' + prev.textContent.replace(/^←\s*/, ''), prev.getAttribute('href'));
+  if (next) add(next.textContent.replace(/\s*→$/, '') + ' →', next.getAttribute('href'));
+
+  var home = document.querySelector('.site-foot a');
+  if (home) add('Оглавление перевода', home.getAttribute('href'));
+
+  nav.appendChild(links);
+  panel.appendChild(nav);
+
+  function close() { panel.classList.remove('open'); }
+
+  btn.onclick = function () { panel.classList.add('open'); };
+  panel.onclick = function (e) {
+    if (e.target === panel || e.target.tagName === 'A') close();
+  };
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') close();
+  });
+
+  document.body.appendChild(btn);
+  document.body.appendChild(panel);
+})();
+</script>
+<script>
+(function () {
+  var doc = document.documentElement;
+  if (doc.scrollHeight - window.innerHeight < 600) return;
+
+  var btn = document.createElement('button');
+  btn.className = 'scroll-btn visible';
+  btn.textContent = '↓';
+  btn.setAttribute('aria-label', 'В конец страницы');
+  document.body.appendChild(btn);
+
+  var up = false, ticking = false;
+
+  function update() {
+    var max = doc.scrollHeight - window.innerHeight;
+    var shouldBeUp = window.scrollY > max / 2;
+    if (shouldBeUp !== up) {
+      up = shouldBeUp;
+      btn.textContent = up ? '↑' : '↓';
+      btn.setAttribute('aria-label', up ? 'В начало страницы' : 'В конец страницы');
+    }
+    ticking = false;
+  }
+
+  btn.onclick = function () {
+    var smooth = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({
+      top: up ? 0 : doc.scrollHeight,
+      behavior: smooth ? 'smooth' : 'auto'
+    });
+  };
+
+  window.addEventListener('scroll', function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  }, { passive: true });
+
+  update();
+})();
+</script> 
+</body>
+</html>
