@@ -138,17 +138,16 @@
     links.appendChild(a);
   }
 
-  add('↑ В начало ', '#', function (e) {
+  add('↑ В начало', '#', function (e) {
     e.preventDefault();
     var smooth = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     window.scrollTo({ top: 0, behavior: smooth ? 'smooth' : 'auto' });
     close();
   });
-
   var prev = document.querySelector('.pager a:not(.next)');
   var next = document.querySelector('.pager a.next');
-  if (prev) add('← ' + prev.textContent.replace(/^←\s*/, ''), prev.getAttribute('href'));
-  if (next) add(next.textContent.replace(/\s*→$/, '') + ' →', next.getAttribute('href'));
+  if (prev) add(prev.textContent.trim(), prev.getAttribute('href'));
+  if (next) add(next.textContent.trim(), next.getAttribute('href'));
 
   var home = document.querySelector('.site-foot a');
   if (home) add('Оглавление перевода', home.getAttribute('href'));
